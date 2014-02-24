@@ -54,6 +54,15 @@ public class ParametrizedRunnerTest {
 		assertMethodName(0, "test_value 1");
 	}
 
+	@Test
+	public void testExecutionOfTestMethodWithIntParameter() throws Exception {
+		ParametrizedRunner runner = new ParametrizedRunner(MethodWithInt.class);
+		assertEquals(1, runner.testCount());
+		runner.run(runNotifier);
+		assertNoFailures();
+		assertFinishedCount(1);
+	}
+
 	private void assertNoFailures() {
 		assertFailures(0);
 	}

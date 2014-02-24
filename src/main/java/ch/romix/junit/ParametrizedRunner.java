@@ -18,8 +18,6 @@ public class ParametrizedRunner extends BlockJUnit4ClassRunner {
 	public ParametrizedRunner(Class<?> klass) throws InitializationError {
 		super(klass);
 	}
-	
-	
 
 	@Override
 	protected List<FrameworkMethod> computeTestMethods() {
@@ -76,7 +74,18 @@ public class ParametrizedRunner extends BlockJUnit4ClassRunner {
 
 		@Override
 		public void evaluate() throws Throwable {
-			testMethod.invokeExplosively(target, (Object[]) testMethod.getParameter().value());
+			Class<?>[] parameterTypes = testMethod.getMethod().getParameterTypes();
+			Object[] args = new Object[parameterTypes.length];
+			for (int i = 0; i < parameterTypes.length; i++) {
+				Class<?> clazz = parameterTypes[i];
+				String paramValue = testMethod.getParameter().value()[i];
+				if (clazz.isPrimitive() && clazz.getName().equals("int")) {
+					args[i] = Integer.parseInt(paramValue);
+				} else {
+					args[i] = paramValue;
+				}
+			}
+			testMethod.invokeExplosively(target, args);
 		}
 	}
 }

@@ -79,8 +79,24 @@ public class ParametrizedRunner extends BlockJUnit4ClassRunner {
 			for (int i = 0; i < parameterTypes.length; i++) {
 				Class<?> clazz = parameterTypes[i];
 				String paramValue = testMethod.getParameter().value()[i];
-				if (clazz.isPrimitive() && clazz.getName().equals("int")) {
-					args[i] = Integer.parseInt(paramValue);
+				if (clazz.isPrimitive()) {
+					String primitiveTypeName = clazz.getName();
+					switch (primitiveTypeName) {
+					case "int":
+						args[i] = Integer.parseInt(paramValue);
+						break;
+					case "boolean":
+						args[i] = Boolean.parseBoolean(paramValue);
+						break;
+					case "long":
+						args[i] = Long.parseLong(paramValue);
+						break;
+					case "byte":
+						args[i] = Byte.parseByte(paramValue);
+						break;
+					default:
+						throw new IllegalArgumentException("Type " + primitiveTypeName + "is not a supported primitive type.");
+					}
 				} else {
 					args[i] = paramValue;
 				}

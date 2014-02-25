@@ -11,6 +11,7 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.InitializationError;
 
 public class ParametrizedRunnerTest {
 
@@ -56,7 +57,26 @@ public class ParametrizedRunnerTest {
 
 	@Test
 	public void testExecutionOfTestMethodWithIntParameter() throws Exception {
-		ParametrizedRunner runner = new ParametrizedRunner(MethodWithInt.class);
+		assertMethodIsExecutedSuccessfully(MethodWithInt.class);
+	}
+
+	@Test
+	public void testExecutionOfTestMethodWithBooleanParameter() throws Exception {
+		assertMethodIsExecutedSuccessfully(MethodWithBoolean.class);
+	}
+
+	@Test
+	public void testExecutionOfTestMethodWithLongParameter() throws Exception {
+		assertMethodIsExecutedSuccessfully(MethodWithLong.class);
+	}
+
+	@Test
+	public void testExecutionOfTestMethodWithByteParameter() throws Exception {
+		assertMethodIsExecutedSuccessfully(MethodWithByte.class);
+	}
+
+	private void assertMethodIsExecutedSuccessfully(Class<?> clazz) throws InitializationError {
+		ParametrizedRunner runner = new ParametrizedRunner(clazz);
 		assertEquals(1, runner.testCount());
 		runner.run(runNotifier);
 		assertNoFailures();

@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(ParametrizedRunner.class)
-public class MethodWithInt {
+public class MethodWithByte {
 	@Test
 	@Parameters({ @Parameter("42") })
-	public void methodWithParameter(int param) {
+	public void methodWithParameter(byte param) {
 		assertEquals(42, param);
 	}
 }

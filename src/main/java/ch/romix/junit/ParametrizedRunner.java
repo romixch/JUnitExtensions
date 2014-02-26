@@ -94,8 +94,14 @@ public class ParametrizedRunner extends BlockJUnit4ClassRunner {
 					case "byte":
 						args[i] = Byte.parseByte(paramValue);
 						break;
+					case "double":
+						args[i] = Double.parseDouble(paramValue);
+						break;
+					case "float":
+						args[i] = Float.parseFloat(paramValue);
+						break;
 					default:
-						throw new IllegalArgumentException("Type " + primitiveTypeName + "is not a supported primitive type.");
+						throw new IllegalArgumentException("Type " + primitiveTypeName + " is not a supported primitive type.");
 					}
 				} else {
 					args[i] = paramValue;

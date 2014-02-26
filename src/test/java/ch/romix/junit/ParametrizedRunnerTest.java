@@ -75,6 +75,16 @@ public class ParametrizedRunnerTest {
 		assertMethodIsExecutedSuccessfully(MethodWithByte.class);
 	}
 
+	@Test
+	public void testExecutionOfTestMethodWithDoubleParameter() throws Exception {
+		assertMethodIsExecutedSuccessfully(MethodWithDouble.class);
+	}
+
+	@Test
+	public void testExecutionOfTestMethodWithFloatParameter() throws Exception {
+		assertMethodIsExecutedSuccessfully(MethodWithFloat.class);
+	}
+
 	private void assertMethodIsExecutedSuccessfully(Class<?> clazz) throws InitializationError {
 		ParametrizedRunner runner = new ParametrizedRunner(clazz);
 		assertEquals(1, runner.testCount());

@@ -85,6 +85,11 @@ public class ParametrizedRunnerTest {
 		assertMethodIsExecutedSuccessfully(MethodWithFloat.class);
 	}
 
+	@Test
+	public void testExecutionOfTestMethodWithShortParameter() throws Exception {
+		assertMethodIsExecutedSuccessfully(MethodWithShort.class);
+	}
+
 	private void assertMethodIsExecutedSuccessfully(Class<?> clazz) throws InitializationError {
 		ParametrizedRunner runner = new ParametrizedRunner(clazz);
 		assertEquals(1, runner.testCount());

@@ -90,6 +90,16 @@ public class ParametrizedRunnerTest {
 		assertMethodIsExecutedSuccessfully(MethodWithShort.class);
 	}
 
+	@Test
+	public void testExecutionOfTestMethodWithCharParameter() throws Exception {
+		assertMethodIsExecutedSuccessfully(MethodWithChar.class);
+	}
+
+	@Test
+	public void testExecutionOfTestMethodWithDateParameter() throws Exception {
+		assertMethodIsExecutedSuccessfully(MethodWithObjectTypeDate.class);
+	}
+
 	private void assertMethodIsExecutedSuccessfully(Class<?> clazz) throws InitializationError {
 		ParametrizedRunner runner = new ParametrizedRunner(clazz);
 		assertEquals(1, runner.testCount());

@@ -1,6 +1,6 @@
 package ch.romix.junit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -23,6 +23,20 @@ public class ParametrizedMethodTest {
 		Parameter parameter = new MyParmeterForTesting(new String[] { "variableName", "Value1", "secondVariable", "SecondValue" });
 		ParametrizedMethod parametrizedMethod = new ParametrizedMethod(method, parameter);
 		assertEquals("testNameWithSeveralParameters_variableName_Value1_secondVariable_SecondValue", parametrizedMethod.getName());
+	}
+
+	@Test
+	public void testEquals() throws Exception {
+		Method method = ParametrizedMethodTest.class.getMethod("testEquals");
+		Parameter parameter = new MyParmeterForTesting(new String[] { "param" });
+		Parameter otherParameter = new MyParmeterForTesting(new String[] { "otherParam" });
+		ParametrizedMethod parametrizedMethodOne = new ParametrizedMethod(method, parameter);
+		ParametrizedMethod parametrizedMethodTwo = new ParametrizedMethod(method, parameter);
+		ParametrizedMethod otherParametrizedMethod = new ParametrizedMethod(method, otherParameter);
+		assertTrue(parametrizedMethodOne.equals(parametrizedMethodTwo));
+		assertTrue(parametrizedMethodTwo.equals(parametrizedMethodOne));
+		assertFalse(parametrizedMethodOne.equals(otherParametrizedMethod));
+		assertFalse(parametrizedMethodOne.equals(new Object()));
 	}
 
 	class MyParmeterForTesting implements Parameter {

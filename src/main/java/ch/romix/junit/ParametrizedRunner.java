@@ -2,8 +2,11 @@ package ch.romix.junit;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -14,9 +17,12 @@ import org.junit.runners.model.Statement;
 public class ParametrizedRunner extends BlockJUnit4ClassRunner {
 
 	private List<FrameworkMethod> methods;
+	private Map<Class<?>, TypeConverter> converters;
 
 	public ParametrizedRunner(Class<?> klass) throws InitializationError {
 		super(klass);
+		converters = new HashMap<>();
+		converters.put(Date.class, new DateConverter());
 	}
 
 	@Override
@@ -77,40 +83,56 @@ public class ParametrizedRunner extends BlockJUnit4ClassRunner {
 			Class<?>[] parameterTypes = testMethod.getMethod().getParameterTypes();
 			Object[] args = new Object[parameterTypes.length];
 			for (int i = 0; i < parameterTypes.length; i++) {
-				Class<?> clazz = parameterTypes[i];
 				String paramValue = testMethod.getParameter().value()[i];
-				if (clazz.isPrimitive()) {
-					String primitiveTypeName = clazz.getName();
-					switch (primitiveTypeName) {
-					case "int":
-						args[i] = Integer.parseInt(paramValue);
-						break;
-					case "boolean":
-						args[i] = Boolean.parseBoolean(paramValue);
-						break;
-					case "long":
-						args[i] = Long.parseLong(paramValue);
-						break;
-					case "byte":
-						args[i] = Byte.parseByte(paramValue);
-						break;
-					case "double":
-						args[i] = Double.parseDouble(paramValue);
-						break;
-					case "float":
-						args[i] = Float.parseFloat(paramValue);
-						break;
-					case "short":
-						args[i] = Short.parseShort(paramValue);
-						break;
-					default:
-						throw new IllegalArgumentException("Type " + primitiveTypeName + " is not a supported primitive type.");
-					}
-				} else {
-					args[i] = paramValue;
-				}
+				Class<?> paramClass = parameterTypes[0];
+				args[i] = convertParameterToMethodArguments(paramClass, paramValue);
 			}
 			testMethod.invokeExplosively(target, args);
+		}
+
+		private Object convertParameterToMethodArguments(Class<?> clazz, String paramValue) {
+			if (clazz.isPrimitive()) {
+				String primitiveTypeName = clazz.getName();
+				return convertPrimitiveType(paramValue, primitiveTypeName);
+			} else {
+				return convertObjectType(paramValue, clazz);
+			}
+		}
+
+		private Object convertPrimitiveType(String paramValue, String primitiveTypeName) {
+			switch (primitiveTypeName) {
+			case "int":
+				return Integer.parseInt(paramValue);
+			case "boolean":
+				return Boolean.parseBoolean(paramValue);
+			case "long":
+				return Long.parseLong(paramValue);
+			case "byte":
+				return Byte.parseByte(paramValue);
+			case "double":
+				return Double.parseDouble(paramValue);
+			case "float":
+				return Float.parseFloat(paramValue);
+			case "short":
+				return Short.parseShort(paramValue);
+			case "char":
+				return paramValue.toCharArray()[0];
+			default:
+				return null;
+			}
+		}
+	}
+
+	public Object convertObjectType(String paramValue, Class<?> type) {
+		if (String.class.isAssignableFrom(type)) {
+			return paramValue;
+		} else {
+			TypeConverter converter = converters.get(type);
+			if (converter == null) {
+				String message = String.format("Could not find a converter for your parameter of type %s.", type);
+				throw new IllegalArgumentException(message);
+			}
+			return converter.convert(paramValue);
 		}
 	}
 }

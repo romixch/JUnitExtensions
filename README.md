@@ -20,3 +20,5 @@ public class ExampleTest {
 ```
 
 The method testColors is then executed twice. Once with the color "green" and once with "red".
+
+Have fun!
